@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
+import postRoutes from './routes/post.routes.js'
 import connectDB from './db/connectMongoDb.js';
 import cookieParser from 'cookie-parser';
 import { v2 as cloudinary } from 'cloudinary';
@@ -24,6 +25,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/post', postRoutes);
 
 
 app.listen(port, () => {
