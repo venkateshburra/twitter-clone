@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { getAuth } from "../GetAuth";
 
 const Sidebar = () => {
   const queryClient= useQueryClient();
@@ -35,7 +36,7 @@ const Sidebar = () => {
 	}
   });
 
- const { data : authUser} = useQuery({ queryKey: ['authUser']})
+ const { data : authUser} = useQuery({ queryKey: ['authUser'], queryFn:getAuth})
 
   return (
     <div className="md:flex-[2_2_0] w-18 max-w-52">
