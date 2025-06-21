@@ -6,7 +6,6 @@ import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  QueryClient,
   useMutation,
   useQuery,
   useQueryClient,
@@ -40,14 +39,14 @@ const Post = ({ post }) => {
           method: "DELETE",
         });
         const data = await res.json();
-        if (res.ok) throw new Error(data.error || "Something went wrong");
+        if (!res.ok) throw new Error(data.error || "Something went wrong");
 
         return data;
       } catch (error) {
         throw new Error(error);
       }
     },
-    onSettled: () => {
+    onSuccess: () => {
       toast.success("post successfully deleted")
       queryClient.invalidateQueries({ queryKey: ["post"] });
     },
