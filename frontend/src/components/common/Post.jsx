@@ -5,16 +5,15 @@ import { FaRegBookmark } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAuth } from "../GetAuth";
 import LoadingSpinner from "./LoadingSpinner";
 import toast from "react-hot-toast";
 
 const Post = ({ post }) => {
+
+  const [ likes, setLikes ] = useState(post.likes);
+
   const queryClient = useQueryClient();
 
   const [comment, setComment] = useState("");
@@ -24,7 +23,7 @@ const Post = ({ post }) => {
   });
 
   const postOwner = post.user;
-  const isLiked = false;
+  const isLiked = likes.includes(authUser._id);
 
   const isMyPost = authUser._id === post.user._id;
 
@@ -32,7 +31,7 @@ const Post = ({ post }) => {
 
   const isCommenting = false;
 
-  const { mutate: deletePost, isPending } = useMutation({
+  const { mutate: deletePost, isPending: isdeleting } = useMutation({
     mutationFn: async (id) => {
       try {
         const res = await fetch(`/api/posts/${id}`, {
@@ -47,10 +46,43 @@ const Post = ({ post }) => {
       }
     },
     onSuccess: () => {
-      toast.success("post successfully deleted")
+      toast.success("post successfully deleted");
       queryClient.invalidateQueries({ queryKey: ["post"] });
     },
   });
+
+  const { mutate: likePost, isPending: isLiking } = useMutation({
+    mutationFn: async (id) => {
+      try {
+        const res = await fetch(`/api/posts/like/${id}`, {
+          method: "POST",
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+
+    onSuccess: (updatedLike) => {
+      setLikes(updatedLike);
+      toast.success("Post liked successfully");
+      queryClient.setQueriesData(["post"], (oldData) => {
+        return oldData.map((p) => {
+          if (p._id === post._id) {
+            return { ...p, likes: updatedLike };
+          }
+          return p;
+        });
+      });
+      // queryClient.invalidateQueries({ queryKey: ["post"]});
+    },
+  });
+
   const handleDeletePost = (id) => {
     deletePost(id);
   };
@@ -59,7 +91,10 @@ const Post = ({ post }) => {
     e.preventDefault();
   };
 
-  const handleLikePost = () => {};
+  const handleLikePost = (id) => {
+    if (isLiking) return;
+    likePost(id);
+  };
 
   return (
     <>
@@ -86,7 +121,7 @@ const Post = ({ post }) => {
             </span>
             {isMyPost && (
               <span className="flex justify-end flex-1">
-                {!isPending && (
+                {!isdeleting && (
                   <FaTrash
                     className="cursor-pointer hover:text-red-500"
                     onClick={() => {
@@ -95,7 +130,7 @@ const Post = ({ post }) => {
                   />
                 )}
 
-                {isPending && <LoadingSpinner size="sm" />}
+                {isdeleting && <LoadingSpinner size="sm" />}
               </span>
             )}
           </div>
@@ -174,11 +209,7 @@ const Post = ({ post }) => {
                       onChange={(e) => setComment(e.target.value)}
                     />
                     <button className="px-4 text-white rounded-full btn btn-primary btn-sm">
-                      {isCommenting ? (
-                        <span className="loading loading-spinner loading-md"></span>
-                      ) : (
-                        "Post"
-                      )}
+                      {isCommenting ? <LoadingSpinner size="md" /> : "Post"}
                     </button>
                   </form>
                 </div>
@@ -194,21 +225,22 @@ const Post = ({ post }) => {
               </div>
               <div
                 className="flex items-center gap-1 cursor-pointer group"
-                onClick={handleLikePost}
+                onClick={() => handleLikePost(post._id)}
               >
-                {!isLiked && (
+                {isLiking && <LoadingSpinner size="sm" />}
+                {!isLiked && !isLiking && (
                   <FaRegHeart className="w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500" />
                 )}
-                {isLiked && (
+                {isLiked && !isLiking && (
                   <FaRegHeart className="w-4 h-4 text-pink-500 cursor-pointer " />
                 )}
 
                 <span
-                  className={`text-sm text-slate-500 group-hover:text-pink-500 ${
-                    isLiked ? "text-pink-500" : ""
+                  className={`text-sm  group-hover:text-pink-500 ${
+                    isLiked ? "text-pink-500" : "text-slate-500"
                   }`}
                 >
-                  {post.likes.length}
+                  {likes.length}
                 </span>
               </div>
             </div>
