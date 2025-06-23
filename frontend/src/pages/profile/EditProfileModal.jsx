@@ -15,38 +15,6 @@ const EditProfileModal = ({ authUser }) => {
 
   const { updateProfile, isUpdatingProfile } = useUpdatedUserProfile();
 
-  // const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
-  //   mutationFn: async () => {
-  //     try {
-  //       const res = await fetch("/api/users/update", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-type": "application/json",
-  //         },
-  //         body: JSON.stringify(formData),
-  //       });
-  //       const data = await res.json();
-  //       if (!res.ok) {
-  //         throw new Error(data.error || "Something went wrong");
-  //       }
-  //       return data;
-  //     } catch (error) {
-  //       throw new Error(error.message);
-  //     }
-  //   },
-  //   onSuccess: () => {
-  //     toast.success("Profile updated successfully");
-      // document.getElementById("edit_profile_modal").close();
-  //     Promise.all([
-  //       queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  //       queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
-  //     ]);
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error.message);
-  //   },
-  // });
-
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

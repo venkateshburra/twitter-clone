@@ -5,7 +5,6 @@ import Posts from "../../components/common/Posts";
 import ProfileHeaderSkeleton from "../../components/skeletons/ProfileHeaderSkeleton";
 import EditProfileModal from "./EditProfileModal";
 
-import { POSTS } from "../../utils/db/dummy";
 
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -58,37 +57,6 @@ const ProfilePage = () => {
 
  const { updateProfile, isUpdatingProfile } = useUpdatedUserProfile()
 
-  // const {mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
-  //   mutationFn: async () => {
-  //     try {
-  //       const res = await fetch("/api/users/update", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-type": "application/json"
-  //         },
-  //         body: JSON.stringify({coverImg, profileImg})
-  //       });
-  //       const data = await res.json();
-  //       if (!res.ok) {
-  //         throw new Error(data.error  || "Something went wrong");          
-  //       }
-  //       return data;
-  //     } catch (error) {
-  //       throw new Error(error.message);       
-  //     }
-  //   },
-  //   onSuccess: () => {
-  //     toast.success("Profile updated successfully");
-  //      Promise.all([
-  //       queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  //       queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
-  //     ]);
-  //   },
-  //   onError: (error) => {
-  //     toast.error(error.message)
-  //   }
-  // })
-
   const isMyProfile = authUser._id === user?._id;
 
   const memberSinceDate = formatMemberSinceDate(user?.createdAt);
@@ -129,7 +97,7 @@ const ProfilePage = () => {
                 <div className="flex flex-col">
                   <p className="text-lg font-bold">{user?.fullName}</p>
                   <span className="text-sm text-slate-500">
-                    {POSTS?.length} posts
+                    {user?.length} posts
                   </span>
                 </div>
               </div>
