@@ -68,7 +68,6 @@ const Post = ({ post }) => {
 
     onSuccess: (updatedLike) => {
       setLikes(updatedLike);
-      toast.success("Post liked successfully");
       queryClient.setQueriesData(["post"], (oldData) => {
         return oldData.map((p) => {
           if (p._id === post._id) {
