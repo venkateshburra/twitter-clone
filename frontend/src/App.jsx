@@ -28,7 +28,7 @@ function App() {
   }
 
   return (
-    <div className="flex max-w-6xl mx-auto">
+    <div className="flex max-w-6xl mx-auto ">
       {authUser && <Sidebar />}
       <Routes>
         <Route
@@ -47,7 +47,10 @@ function App() {
           path="/notifications"
           element={authUser ? <NotificationPage /> : <Navigate to="/login" />}
         />
-        <Route path="/profile/:username" element={<ProfilePage />} />
+        <Route
+          path="/profile/:username"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
       </Routes>
       {authUser && <RightPanel />}
       <Toaster />

@@ -57,11 +57,11 @@ const ProfilePage = () => {
 
  const { updateProfile, isUpdatingProfile } = useUpdatedUserProfile()
 
-  const isMyProfile = authUser._id === user?._id;
+  const isMyProfile = authUser?._id === user?._id;
 
   const memberSinceDate = formatMemberSinceDate(user?.createdAt);
 
-  const amIFollowing = authUser.following.includes(user?._id);
+  const amIFollowing = authUser?.following.includes(user?._id);
 
   useEffect(() => {
     refetch();

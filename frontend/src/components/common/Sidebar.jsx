@@ -8,10 +8,12 @@ import { BiLogOut } from "react-icons/bi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { getAuth } from "../GetAuth";
+import { useState } from "react";
 
 const Sidebar = () => {
-  const queryClient= useQueryClient();
-  
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const queryClient = useQueryClient();
+
   const { mutate: logout } = useMutation({
     mutationFn: async () => {
       try {
@@ -29,14 +31,17 @@ const Sidebar = () => {
     },
 
     onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["authUser"]})
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
     },
-	onError: () => {
-		toast.error("Logout failed");
-	}
+    onError: () => {
+      toast.error("Logout failed");
+    },
   });
 
- const { data : authUser} = useQuery({ queryKey: ['authUser'], queryFn:getAuth})
+  const { data: authUser } = useQuery({
+    queryKey: ["authUser"],
+    queryFn: getAuth,
+  });
 
   return (
     <div className="md:flex-[2_2_0] w-18 max-w-52">
@@ -95,13 +100,42 @@ const Sidebar = () => {
                 className="w-5 h-5 cursor-pointer"
                 onClick={(e) => {
                   e.preventDefault();
-                  logout();
+                  setShowLogoutModal(true);
                 }}
               />
             </div>
           </Link>
         )}
       </div>
+
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="bg-[#1a1a1a] p-6 rounded-lg shadow-lg max-w-sm w-full text-white text-center">
+            <p className="mb-4 text-lg font-semibold">
+              Are you sure you want to logout?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                className="px-4 py-2 text-white bg-gray-600 rounded hover:bg-gray-700"
+                onClick={() => {
+                  setShowLogoutModal(false);
+                }}
+              >
+                No
+              </button>
+              <button
+                className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
+                onClick={() => {
+                  logout(); // 👈 Call logout function
+                  setShowLogoutModal(false); // Close modal
+                }} // 👈 Just close modal
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

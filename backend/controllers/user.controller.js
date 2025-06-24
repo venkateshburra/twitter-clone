@@ -94,7 +94,7 @@ export const getSuggestedUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const { fullName, email, username, cuurentPassword, newPassword, bio, link } =
+  const { fullName, email, username, currentPassword, newPassword, bio, link } =
     req.body;
   let { profileImg, coverImg } = req.body;
 
@@ -105,16 +105,16 @@ export const updateUser = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (
-      (!newPassword && cuurentPassword) ||
-      (!cuurentPassword && newPassword)
+      (!newPassword && currentPassword) ||
+      (!currentPassword && newPassword)
     ) {
       return res.status(400).json({
         error: "Please provide both current password and new password",
       });
     }
 
-    if (cuurentPassword && newPassword) {
-      const isMatch = await bcrypt.compare(cuurentPassword, user.password);
+    if (currentPassword && newPassword) {
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch)
         return res.status(400).json({ error: "Current password is incorrect" });
       if (newPassword.length < 6) {

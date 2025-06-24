@@ -77,7 +77,7 @@ const NotificationPage = () => {
           </div>
         )}
         {notifications?.length === 0 && (
-          <div className="p-4 font-bold text-center">No notifications 🤔</div>
+          <div className="p-4 font-bold text-center">No notifications</div>
         )}
         {notifications?.map((notification) => (
           <div className="border-b border-gray-700" key={notification._id}>

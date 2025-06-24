@@ -23,9 +23,9 @@ const Post = ({ post }) => {
   });
 
   const postOwner = post.user;
-  const isLiked = likes.includes(authUser._id);
+  const isLiked = likes.includes(authUser?._id);
 
-  const isMyPost = authUser._id === post.user._id;
+  const isMyPost = authUser?._id === post.user._id;
 
   const formattedDate = formatPostDate(post.createdAt);
 
@@ -198,7 +198,7 @@ const Post = ({ post }) => {
                   <div className="flex flex-col gap-3 overflow-auto max-h-60">
                     {post.comments.length === 0 && (
                       <p className="text-sm text-slate-500">
-                        No comments yet 🤔 Be the first one 😉
+                        No comments yet Be the first one
                       </p>
                     )}
                     {post.comments.map((comment) => (

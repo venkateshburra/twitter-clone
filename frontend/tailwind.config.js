@@ -9,7 +9,7 @@ export default {
   plugins: [daisyui],
   daisyui: {
     themes: [
-      "light",
+      // "light",
       {
         black: {
           "primary": "#1d9bf0", // Twitter blue
